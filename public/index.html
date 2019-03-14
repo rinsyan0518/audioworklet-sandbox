@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>Sandbox</title>
+    <script>
+      window.addEventListener('load', async e => {
+        const context = new (AudioContext || webkitAudioContext)();
+        await context.audioWorklet.addModule('processor.js');
+        const oscillator = context.createOscillator();
+        const sandbox = new SandboxNode(context);
+        oscillator.connect(sandbox);
+        sandbox.connect(context.destination);
+
+        document.getElementById('play').addEventListener('click', () => {
+          oscillator.start();
+        });
+        document.getElementById('stop').addEventListener('click', () => {
+          oscillator.stop();
+        });
+        document.getElementById('gain').addEventListener('change', ev => {
+          sandbox.gain.value =  ev.target.value
+        });
+      })
+    </script>
+  </head>
+  <body>
+    <button id="play">Play</button>
+    <button id="stop">Stop</button>
+    <label>Gain<input id="gain" type="range" min="0.0" max="2.0"/></label>
+  </body>
+</html>
